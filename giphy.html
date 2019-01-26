@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Giphy Fun!</title>
+    <style type="text/css">
+        button,
+        div,
+        form,
+        input {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="buttons"></div>
+
+        <form id="add-form">
+            <label for="country-input">Add a country</label>
+            <input type="text" id="country-input"><br>
+            <input id="add-country" type="submit" value="Add a country">
+        </form>
+
+        <div id="images"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+            var topics = ["England", "Japan", "Turkey", "Australia", "Sweden", "Canada", "USA", "Brazil", "China", "Israel"];
+
+            function displayImages() {
+                var country = $(this).attr("data-name");
+                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UlsGZGJN2JtxEIbf0FazuLxh7m2ASR2x&q=" + country + "&rating=&limit=10";
+
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(function(response) {
+                    var countryDiv = $("<div class='country'>");
+                    var rating = response.rating;
+                    var pOne = $("<p>").text("Rating: " + rating);
+                    countryDiv.append(pOne);
+                    var imageURL = response.images.fixed_height.url;
+                    var image = $("<img>").attr("src", imageURL);
+                    countryDiv.append(image);
+
+                })
+            };
+
+            function buttons() {
+                $("#buttons").empty();
+                for (var i = 0; i < topics.length; i++) {
+                    var b = $("<button>");
+                    b.addClass("country");
+                    b.attr("data-name", topics[i]);
+                    b.text(topics[i]);
+                    $("#buttons").append(b);
+                }
+            };
+
+            $("#add-country").on("click", function (event) {
+                event.preventDefault();
+                var country = $("#country-input").val().trim();
+                topics.push(country);
+                buttons();
+            });
+
+            buttons();
+
+        </script>
+    </div>
+</body>
+
+</html>
