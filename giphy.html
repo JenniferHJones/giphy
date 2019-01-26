@@ -67,25 +67,26 @@
                         var cityDiv = $("<div>");
                         var p = $("<p>").text("Rating: " + response.data[i].rating);
                         cityDiv.append(p);
-                        var image = $("<img> class='city'").attr("src", response.data[i].images.fixed_height_still.url);
+                        var image = $("<img data-state='still' class='city'>").attr("src", response.data[i].images.fixed_height_still.url);
                         cityDiv.append(image);
                         $("#images").append(cityDiv);
                     }
+                    $(".city").on("click", function () {
+                        var state = $(this).attr("data-state");
+                        if (state === "still") {
+                            $(this).attr('src', $(this).attr(response.data[i].images.fixed_height.url));
+                            $(this).attr('data-state', 'animate');
+                        } else {
+                            $(this).attr('src', $(this).attr('data-still'));
+                            $(this).attr('data-state', response.data[i].images.fixed_height_still.url);
+                        }
+                    });
                 })
             };
 
-            $(document).on("click", ".city", animateImage);
+            // $(document).on("click", ".city", animateImage);
 
-            function animateImage() {
-                var state = $(this).attr("data-state");
-                if (state === "still") {
-                    $(this).attr('src', $(this).attr('data-animate'));
-                    $(this).attr('data-state', 'animate');
-                } else {
-                    $(this).attr('src', $(this).attr('data-still'));
-                    $(this).attr('data-state', 'still');
-                }
-            };
+
         </script>
     </div>
 </body>
