@@ -19,9 +19,9 @@
         <div id="buttons"></div>
 
         <form id="add-form">
-            <label for="country-input">Add a country</label>
-            <input type="text" id="country-input"><br>
-            <input id="add-country" type="submit" value="Add a country">
+            <label for="city-input">Add a city</label>
+            <input type="text" id="city-input"><br>
+            <input id="add-city" type="submit" value="Add a city">
         </form>
 
         <div id="images"></div>
@@ -29,24 +29,25 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
 
-            var topics = ["England", "Japan", "Turkey", "Australia", "Sweden", "Canada", "USA", "Brazil", "China", "Israel"];
+            var topics = ["London", "Tokyo", "Istanbul", "Paris", "Dubai", "Seoul", "New York", "Beijing", "Moscow", "Tel Aviv"];
 
             function displayImages() {
-                var country = $(this).attr("data-name");
-                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UlsGZGJN2JtxEIbf0FazuLxh7m2ASR2x&q=" + country + "&rating=&limit=10";
+                var city = $(this).attr("data-name");
+                var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UlsGZGJN2JtxEIbf0FazuLxh7m2ASR2x&q=" + city + "&rating=&limit=10";
 
                 $.ajax({
                     url: queryURL,
                     method: "GET"
-                }).then(function(response) {
-                    var countryDiv = $("<div class='country'>");
-                    var rating = response.rating;
-                    var pOne = $("<p>").text("Rating: " + rating);
-                    countryDiv.append(pOne);
-                    var imageURL = response.images.fixed_height.url;
-                    var image = $("<img>").attr("src", imageURL);
-                    countryDiv.append(image);
-
+                }).then(function (response) {
+                    console.log(response);
+                    for (var i = 0; i < response.data.length; i++) {
+                        var cityDiv = $("<div>");
+                        var p = $("<p>").text("Rating: " + response.data[i].rating);
+                        cityDiv.append(p);
+                        var image = $("<img>").attr("src", response.data[i].images.fixed_height_still.url);
+                        cityDiv.append(image);
+                        $("#images").append(cityDiv);
+                    }
                 })
             };
 
@@ -54,19 +55,21 @@
                 $("#buttons").empty();
                 for (var i = 0; i < topics.length; i++) {
                     var b = $("<button>");
-                    b.addClass("country");
+                    b.addClass("city-btn");
                     b.attr("data-name", topics[i]);
                     b.text(topics[i]);
                     $("#buttons").append(b);
                 }
             };
 
-            $("#add-country").on("click", function (event) {
+            $("#add-city").on("click", function (event) {
                 event.preventDefault();
-                var country = $("#country-input").val().trim();
-                topics.push(country);
+                var city = $("#city-input").val().trim();
+                topics.push(city);
                 buttons();
             });
+
+            $(document).on("click", ".city-btn", displayImages);
 
             buttons();
 
