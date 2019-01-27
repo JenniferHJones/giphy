@@ -33,7 +33,7 @@ $(document).ready(function () {
         $("#images").empty();
         var sport = $(this).attr("data-name");
         var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UlsGZGJN2JtxEIbf0FazuLxh7m2ASR2x&q=" + sport + "+fail&rating=&limit=10";
-        var queryURLmore = queryURL + "&offset=10";
+        var offsetNum = 0;
 
         $.ajax({
             url: queryURL,
@@ -52,40 +52,9 @@ $(document).ready(function () {
                 sportDiv.append(image);
                 $("#images").append(sportDiv);
             }
-            // on click event to change GIF from still to animated
-            $(".sport").on("click", function () {
-                console.log("click");
-                var state = $(this).attr("data-state");
-                if (state === "still") {
-                    var animateURL = $(this).attr("data-animate");
-                    $(this).attr('src', animateURL);
-                    $(this).attr('data-state', 'animate');
-                } else {
-                    $(this).attr('src', $(this).attr('data-still'));
-                    $(this).attr('data-state', "still");
-                }
-            });
-        })
 
-        // on click event to run displayMoreImages function
-        $(document).on("click", ".moreImages", displayMoreImages);
-
-        // function to append 10 more GIFs to page
-        function displayMoreImages() {
-            $.ajax({
-                url: queryURLmore,
-                method: "GET"
-            }).then(function (response) {
-                for (var i = 0; i < response.data.length; i++) {
-                    var sportDiv = $("<div>");
-                    var p = $("<p>").text("Title:  " + response.data[i].title + ", " + "Source: " + response.data[i].source_tld + ", " + "Rating: " + response.data[i].rating);
-                    sportDiv.append(p);
-                    var image = $("<img data-state='still' class='sport mb-5'>").attr("src", response.data[i].images.fixed_height_still.url);
-                    image.attr("data-still", response.data[i].images.fixed_height_still.url);
-                    image.attr("data-animate", response.data[i].images.fixed_height.url);
-                    sportDiv.append(image);
-                    $("#images").append(sportDiv);
-                }
+            // function for on click event to change GIF from still to animated
+            function state() {
                 $(".sport").on("click", function () {
                     console.log("click");
                     var state = $(this).attr("data-state");
@@ -98,8 +67,39 @@ $(document).ready(function () {
                         $(this).attr('data-state', "still");
                     }
                 });
-            });
-        }
-    };
+            }
+            // run function for initial 10 GIFs
+            state();
 
+            // on click event to run displayMoreImages function
+            $(document).on("click", ".moreImages", displayMoreImages);
+
+            // function to append 10 more GIFs to page, different images called each time function runs
+            function displayMoreImages() {
+                offsetNum += 10;
+                console.log(offsetNum);
+
+                var queryUrlAgain = queryURL + "&offset=" + offsetNum;
+                console.log(queryUrlAgain);
+
+                $.ajax({
+                    url: queryUrlAgain,
+                    method: "GET"
+                }).then(function (response) {
+                    for (var i = 0; i < response.data.length; i++) {
+                        var sportDiv = $("<div>");
+                        var p = $("<p>").text("Title:  " + response.data[i].title + ", " + "Source: " + response.data[i].source_tld + ", " + "Rating: " + response.data[i].rating);
+                        sportDiv.append(p);
+                        var image = $("<img data-state='still' class='sport mb-5'>").attr("src", response.data[i].images.fixed_height_still.url);
+                        image.attr("data-still", response.data[i].images.fixed_height_still.url);
+                        image.attr("data-animate", response.data[i].images.fixed_height.url);
+                        sportDiv.append(image);
+                        $("#images").append(sportDiv);
+                    }
+                    // run function for newly added GIFs
+                    state();
+                });
+            }
+        })
+    };
 })
