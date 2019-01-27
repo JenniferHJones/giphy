@@ -12,12 +12,12 @@ input {
 }
 
 h1 {
-    background-image: url("../regal.png");
+    background-image: url("../images/regal.png");
 }
 
 body {
     font-family: 'Philosopher', sans-serif;
-    background-image: url("../regal.png");
+    background-image: url("../images/regal.png");
 }
 
 .moreImages {
