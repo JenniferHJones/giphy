@@ -19,10 +19,11 @@ $(document).ready(function () {
 
     // function to create a new button after user clicks submit button
     $("#add-sport").on("click", function (event) {
-        // event.preventDefault();
+        event.preventDefault();
         var sport = $("#sport-input").val().trim();
         topics.push(sport);
         buttons();
+        $("#images").empty();
     });
 
     // on click event to run displayImages function
@@ -44,8 +45,11 @@ $(document).ready(function () {
             // for loop through the returned GIFs, dynamically insert them, and display title, source, and rating
             for (var i = 0; i < response.data.length; i++) {
                 var sportDiv = $("<div>");
-                var p = $("<p>").text("Title:  " + response.data[i].title + ", " + "Source: " + response.data[i].source_tld + ", " + "Rating: " + response.data[i].rating);
-                sportDiv.append(p);
+                // var p = $("<p>").text("Title:  " + response.data[i].title + ", " + "Source: " + response.data[i].source_tld + ", " + "Rating: " + response.data[i].rating);          
+                var t = $("<p>").text("Title:  " + response.data[i].title);
+                var s = $("<p>").text("Source: " + response.data[i].source_tld);
+                var r = $("<p>").text("Rating: " + response.data[i].rating);            
+                sportDiv.append(t,s,r);
                 var image = $("<img data-state='still' class='sport mb-5'>").attr("src", response.data[i].images.fixed_height_still.url);
                 image.attr("data-still", response.data[i].images.fixed_height_still.url);
                 image.attr("data-animate", response.data[i].images.fixed_height.url);
